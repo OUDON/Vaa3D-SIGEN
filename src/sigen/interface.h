@@ -14,6 +14,7 @@ public:
   int smoothing_level;
   bool enable_clipping;
   int clipping_level;
+  int binarization_thresh;
 };
 void Extract(const BinaryCube &cube,
              std::vector<int> &out_n, std::vector<int> &out_type,

@@ -102,7 +102,8 @@ static sigen::BinaryCube convertToBinaryCube(
     const int ydim,
     const int zdim,
     const int /* channel_dim */,
-    const int channel) {
+    const int channel,
+    const int bin_thresh) {
   const int stride_x = unit_byte;
   const int stride_y = unit_byte * xdim;
   const int stride_z = unit_byte * xdim * ydim;
@@ -111,7 +112,7 @@ static sigen::BinaryCube convertToBinaryCube(
   for (int x = 0; x < xdim; ++x) {
     for (int y = 0; y < ydim; ++y) {
       for (int z = 0; z < zdim; ++z) {
-        if (p[stride_x * x + stride_y * y + stride_z * z + stride_c * channel] >= 128) {
+        if (p[stride_x * x + stride_y * y + stride_z * z + stride_c * channel] >= bin_thresh) {
           cube[x][y][z] = true;
         } else {
           cube[x][y][z] = false;
@@ -182,6 +183,9 @@ static bool getConfig(QWidget *parent, sigen::interface::Options *options) {
 
   QObject::connect(clipping_checkbox, SIGNAL(toggled(bool)), cl_lineEdit, SLOT(setEnabled(bool)));
 
+  QLineEdit *th_lineEdit = addIntEdit("128", parent);
+  fLayout->addRow(QObject::tr("Binarization Threshold"), th_lineEdit);
+
   QDialogButtonBox *buttonBox = new QDialogButtonBox(
       QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
       Qt::Horizontal,
@@ -227,6 +231,7 @@ static bool getConfig(QWidget *parent, sigen::interface::Options *options) {
 
     options->enable_clipping = clipping_checkbox->checkState() == Qt::Checked;
     options->clipping_level = cl_lineEdit->text().toInt();
+    options->binarization_thresh = th_lineEdit->text().toInt();
   }
 
   return retval;
@@ -301,7 +306,7 @@ void reconstruction_func(
   // v3d_msg(QString("VT = %1\nDT = %2\nSM = %3\nCL = %4").arg(options.volume_threshold).arg(options.distance_threshold).arg(options.smoothing_level).arg(options.clipping_level), via_gui);
   // return;
 
-  sigen::BinaryCube cube = convertToBinaryCube(data1d, /* unit_byte = */ 1, N, M, P, sc, c - 1);
+  sigen::BinaryCube cube = convertToBinaryCube(data1d, /* unit_byte = */ 1, N, M, P, sc, c - 1, options.binarization_thresh);
   std::vector<int> out_n, out_type, out_pn;
   std::vector<double> out_x, out_y, out_z, out_r;
   sigen::interface::Extract(

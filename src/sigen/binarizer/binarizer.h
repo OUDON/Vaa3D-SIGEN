@@ -4,6 +4,6 @@
 namespace sigen {
 class Binarizer {
 public:
-  BinaryCube Binarize(const ImageSequence &is);
+  BinaryCube Binarize(const ImageSequence &is, const int thresh);
 };
 }

@@ -1,4 +1,4 @@
-VAA3DPATH = /Users/arosh/git/vaa3d
+VAA3DPATH = /Users/Takahiro/Shinzaike/vaa3d/v3d_external
 
 TEMPLATE = lib
 CONFIG += qt plugin release

@@ -3,3 +3,4 @@ build
 log
 sample_input
 sample_output
+*.dSYM

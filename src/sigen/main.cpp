@@ -35,6 +35,7 @@ cmdline::parser parse_args(int argc, char *argv[]) {
   a.add<int>("vt", '\0', "volume threshold", false, 0);
   a.add<int>("clipping", '\0', "clipping level", false, 0);
   a.add<int>("smoothing", '\0', "smoothing level", false, 0);
+  a.add<int>("bin_thresh", '\0', "binarization threshold", false, 127);
   a.parse_check(argc, argv);
   return a;
 }
@@ -48,8 +49,9 @@ int main(int argc, char *argv[]) {
   sigen::ImageSequence is = loader.Load(args.get<std::string>("input"));
   LOG(INFO) << "load (done)";
 
+  const int bin_thresh = args.get<int>("bin_thresh");
   sigen::Binarizer bin;
-  sigen::BinaryCube cube = bin.Binarize(is);
+  sigen::BinaryCube cube = bin.Binarize(is, bin_thresh);
   is.clear();
   LOG(INFO) << "binarize (done)";
 

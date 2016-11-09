@@ -8,7 +8,7 @@ class SigenPlugin : public QObject, public V3DPluginInterface2_1 {
   Q_INTERFACES(V3DPluginInterface2_1);
 
 public:
-  float getPluginVersion() const { return 1.1f; }
+  float getPluginVersion() const { return 1.2f; }
 
   QStringList menulist() const;
   void domenu(
